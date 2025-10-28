@@ -3,8 +3,37 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Google Style Search + Camera (Auto Send)</title>
-<style>
+  <title>Google uslubidagi qidiruv + Kamera — Rasmni avtomatik Telegramga yuborish</title>
+
+  <!-- SEO meta -->
+  <meta name="description" content="Google uslubidagi oddiy qidiruv interfeysi va kamera tugmasi — surat olingan zahoti Telegram bot orqali avtomatik yuborish. Ushbu sahifa Telegram bot integratsiyasiga moslangan va mobilga ham moslashgan." />
+  <meta name="keywords" content="qidiruv, google uslubi, kamera, telegram bot, rasm yuborish, image search, Uzbek" />
+  <meta name="author" content="Sizning Ismingiz yoki Kompaniya" />
+  <link rel="canonical" href="https://sizning-saytingiz.uz/google-style-search-camera" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph / social -->
+  <meta property="og:title" content="Google uslubidagi qidiruv + Kamera — Rasmni avtomatik Telegramga yuborish" />
+  <meta property="og:description" content="Google uslubidagi qidiruv interfeysi: yozing yoki kamerani bosing — olingan rasm Telegram botga avtomatik yuboriladi." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sizning-saytingiz.uz/google-style-search-camera" />
+  <meta property="og:image" content="https://sizning-saytingiz.uz/assets/google-logo.png" />
+  <meta property="og:site_name" content="Sizning Saytingiz" />
+
+  <!-- Twitter card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Google uslubidagi qidiruv + Kamera — Telegramga avtomatik rasm yuborish" />
+  <meta name="twitter:description" content="Qidiruv yozing yoki kamerani oching — rasm avtomatik Telegram botga yuboriladi." />
+  <meta name="twitter:image" content="https://sizning-saytingiz.uz/assets/google-logo.png" />
+
+  <!-- Favicon / title image (placeholder) -->
+  <!-- O'zingizning logongizni yoki ruxsat bilan Google logotipini shu faylga joylang -->
+  <link rel="icon" href="/assets/google-logo.png" />
+
+</head>
+<body>
+
+  <style>
   body {
   font-family: 'Roboto', Arial, sans-serif;
   display: flex;
@@ -253,8 +282,6 @@ video, canvas {
 }
 
 </style>
-</head>
-<body>
   <div class="navbar">
     <div class="nav-links">
       <a href="#">Gmail</a>
@@ -266,9 +293,259 @@ video, canvas {
   <div class="container">
     <img class="logo" src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="logo">
 
-    <div class="search-box">
-      <input type="text" placeholder="Qidiruv..." />
+   <!-- Qidiruv qutisi + uslub + script - shu blokni o'zingiz xohlagan joyga joylang -->
+<div class="search-box">
+  <div class="search-inner">
+    <input id="searchInput" type="text" placeholder="Qidiruv..." autocomplete="off" />
+    <button id="clearBtn" title="Tozalash">&times;</button>
+  </div>
+
+  <!-- Takliflar oynasi -->
+  <div id="suggestions" class="suggestions" aria-hidden="true">
+    <div class="suggest-section" id="recentSection">
+      <div class="section-title">
+        So‘nggi izlashlar
+        <button id="clearHistory" class="clear-history" title="Barchasini o‘chirish">Tozalash</button>
+      </div>
+      <div id="recentList" class="chips"></div>
     </div>
+
+    <div class="suggest-section" id="matchSection">
+      <div class="section-title">O‘xshash takliflar</div>
+      <ul id="matches" class="matches"></ul>
+    </div>
+  </div>
+</div>
+
+<style>
+/* --- Oson, zamonaviy va responsiv styling --- */
+.search-box { position: relative; width: 100%; max-width: 520px; margin: 0 auto; font-family: Arial, sans-serif; }
+/* .search-inner { display:flex; align-items:center; gap:8px; background: #fff; border: 1px solid #e0e0e0; padding: 8px 10px; border-radius: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); } */
+#searchInput { flex:1; border:0; outline:0; font-size:16px; padding:6px 4px; }
+#clearBtn { background:transparent; border:0; font-size:20px; line-height:1; color:#888; cursor:pointer; display:none; }
+
+.suggestions { position: absolute; left:0; right:0; top: calc(100% + 8px); background:#fff; border:1px solid #e6e6e6; border-radius:10px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); padding:12px; z-index:50; display:none; }
+.suggest-section { margin-bottom:8px; }
+.section-title { display:flex; justify-content:space-between; align-items:center; font-size:13px; color:#666; margin-bottom:8px; }
+.clear-history { background:transparent; border:0; color:#0073e6; cursor:pointer; font-size:13px; padding:2px 6px; }
+
+.chips { display:flex; gap:8px; flex-wrap:wrap; }
+.chips .chip { background:#f3f6fb; padding:6px 10px; border-radius:999px; cursor:pointer; font-size:14px; color:#102a43; border:1px solid rgba(16,42,67,0.06); }
+.chips .chip:hover { transform:translateY(-2px); box-shadow: 0 6px 18px rgba(16,42,67,0.06); }
+
+.matches { list-style:none; margin:0; padding:0; max-height:180px; overflow:auto; }
+.matches li { padding:8px 10px; border-radius:8px; cursor:pointer; font-size:15px; color:#111; }
+.matches li + li { margin-top:6px; }
+.matches li:hover, .matches li.active { background:#f4f8ff; }
+
+@media (max-width:520px){
+  .search-box { max-width: 80%; }
+  .suggestions { top:calc(100% + 6px); padding:10px; }
+}
+</style>
+
+<script>
+/* --- Script: history saqlash, takliflarni filtrlash va UI logikasi --- */
+(function(){
+  const input = document.getElementById('searchInput');
+  const suggestions = document.getElementById('suggestions');
+  const recentList = document.getElementById('recentList');
+  const matchesList = document.getElementById('matches');
+  const clearHistoryBtn = document.getElementById('clearHistory');
+  const clearBtn = document.getElementById('clearBtn');
+
+  const STORAGE_KEY = 'searchHistory_v1';
+  const MAX_HISTORY = 8;
+
+  // Misol uchun serverdan yoki sizning maxsus ma'lumotlaringizdan keladigan o'xshash so'zlar ro'yxati
+  const fallbackSuggestions = [
+    'JavaScript darslari', 'HTML formalar', 'CSS flex misollari',
+    'React carousel', 'Telegram bot yuklash', 'Responsive header',
+    'SCSS mixin', 'No-code platformalar', 'Frontend ish qidirish', 'GitHub repozitoriyalar'
+  ];
+
+  // localStorage-dan yuklash
+  function loadHistory(){
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    } catch(e) { return []; }
+  }
+
+  function saveHistory(arr){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr.slice(0, MAX_HISTORY)));
+  }
+
+  function addToHistory(term){
+    if(!term) return;
+    const trimmed = term.trim();
+    if(!trimmed) return;
+    let hist = loadHistory();
+    // takrorlarni olib tashlash (oxirgi eng birinchi)
+    hist = hist.filter(x => x.toLowerCase() !== trimmed.toLowerCase());
+    hist.unshift(trimmed);
+    saveHistory(hist);
+    renderRecent();
+  }
+
+  function clearHistory(){
+    localStorage.removeItem(STORAGE_KEY);
+    renderRecent();
+  }
+
+  function renderRecent(){
+    const hist = loadHistory();
+    recentList.innerHTML = hist.length ? hist.map(h => `<div class="chip" data-val="${escapeHtml(h)}">${escapeHtml(h)}</div>`).join('') : '<div style="color:#999; font-size:14px">Hech narsa yo‘q</div>';
+  }
+
+  function renderMatches(filter){
+    const normalized = (filter || '').toLowerCase().trim();
+    // birinchi navbatda history ichida mos keladiganlarni ko'rsatamiz
+    const hist = loadHistory().filter(h => h.toLowerCase().includes(normalized));
+    // fallback sugesslarni ham qo'shamiz, history bilan takrorlanmasligi uchun
+    const others = fallbackSuggestions.filter(s => s.toLowerCase().includes(normalized) && !hist.some(h=>h.toLowerCase()===s.toLowerCase()));
+    const items = normalized ? [...hist, ...others] : [];
+    if(items.length === 0 && normalized){
+      matchesList.innerHTML = `<li style="color:#777; font-size:14px">Hech nima topilmadi. <strong>"${escapeHtml(filter)}"</strong> uchun yangi qidiruvni saqlash mumkin.</li>`;
+    } else {
+      matchesList.innerHTML = items.map(it => `<li tabindex="0" class="match-item">${escapeHtml(it)}</li>`).join('');
+    }
+  }
+
+  // xavfsiz HTML uchun oddiy escapeler
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+  }
+
+  // UI ko'rsatish / yashirish
+  function showSuggestions(){
+    suggestions.style.display = 'block';
+    suggestions.setAttribute('aria-hidden','false');
+  }
+  function hideSuggestions(){
+    suggestions.style.display = 'none';
+    suggestions.setAttribute('aria-hidden','true');
+  }
+
+  // Eventlar
+  input.addEventListener('focus', () => {
+    renderRecent();
+    renderMatches('');
+    showSuggestions();
+    toggleClearBtn();
+  });
+
+  input.addEventListener('input', (e) => {
+    const v = e.target.value;
+    renderMatches(v);
+    toggleClearBtn();
+    showSuggestions();
+  });
+
+  // enter bilan qidiruvni saqlash
+  input.addEventListener('keydown', (e) => {
+    // simple keyboard nav for matches
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      const val = input.value.trim();
+      if(val) {
+        addToHistory(val);
+        hideSuggestions();
+        // agar xohlasangiz shu yerga qidiruvni yuborish funksiyasini chaqiring
+        // example: performSearch(val);
+      }
+    } else if (e.key === 'Escape') {
+      hideSuggestions();
+      input.blur();
+    } else if (e.key === 'ArrowDown') {
+      // fokusni birinchi match elementiga o'tkazish
+      const first = matchesList.querySelector('.match-item');
+      if(first) { first.focus(); }
+    }
+  });
+
+  // chip bosilganda
+  recentList.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if(!chip) return;
+    const v = chip.dataset.val;
+    input.value = v;
+    input.focus();
+    renderMatches(v);
+  });
+
+  // match bosilganda yoki Enter bosilganda
+  matchesList.addEventListener('click', (e) => {
+    const li = e.target.closest('li');
+    if(!li) return;
+    const v = li.textContent.trim();
+    input.value = v;
+    addToHistory(v);
+    hideSuggestions();
+  });
+
+  // klaviatura navigatsiyasi matchs ichida
+  matchesList.addEventListener('keydown', (e) => {
+    const cur = document.activeElement;
+    if(!cur || !cur.classList.contains('match-item')) return;
+    if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      const next = cur.nextElementSibling;
+      if(next) next.focus();
+    } else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      const prev = cur.previousElementSibling;
+      if(prev) prev.focus();
+      else input.focus();
+    } else if(e.key === 'Enter'){
+      e.preventDefault();
+      const v = cur.textContent.trim();
+      input.value = v;
+      addToHistory(v);
+      hideSuggestions();
+    }
+  });
+
+  // history tozalash
+  clearHistoryBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    clearHistory();
+  });
+
+  // tashqariga bosilganda panel yopish
+  document.addEventListener('click', (e) => {
+    if(!document.querySelector('.search-box').contains(e.target)) {
+      hideSuggestions();
+    }
+  });
+
+  // Clear input knopkasi ko'rsatish
+  function toggleClearBtn(){
+    if(input.value.trim().length) clearBtn.style.display = 'inline';
+    else clearBtn.style.display = 'none';
+  }
+  clearBtn.addEventListener('click', () => {
+    input.value = '';
+    input.focus();
+    renderMatches('');
+    toggleClearBtn();
+  });
+
+  // boshlang'ich render
+  renderRecent();
+
+  // OPTIONAL: demo uchun biroz boshlang'ich tarix qo'yish (faqat agar history bo'sh bo'lsa)
+  (function seedDemo(){
+    const hist = loadHistory();
+    if(hist.length === 0){
+      const sample = ['HTML tutorial', 'CSS grid misollari', 'React project', 'Telegram bot yaratish'];
+      saveHistory(sample);
+      renderRecent();
+    }
+  })();
+
+})();
+</script>
+
 
     <div class="camera-card">
       <div class="cam-box">
